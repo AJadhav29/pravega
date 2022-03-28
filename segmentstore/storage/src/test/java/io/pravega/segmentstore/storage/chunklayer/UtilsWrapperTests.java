@@ -287,7 +287,7 @@ public class UtilsWrapperTests extends ThreadPooledTestSuite {
      * @throws Exception Throws exception in case of any error.
      */
     @Test
-    public void testSanityCreateChunk() throws Exception {
+    public void testSanityWhenCreateChunkThrows() throws Exception {
         @Cleanup
         BaseChunkStorage spyChunkStorage = spy(new InMemoryChunkStorage(executorService()));
         Exception exceptionToThrow = new ChunkStorageException("test", "Test Exception", new IOException("Test Exception"));
@@ -301,7 +301,7 @@ public class UtilsWrapperTests extends ThreadPooledTestSuite {
      * @throws Exception Throws exception in case of any error.
      */
     @Test
-    public void testSanityGetChunkInfo() throws Exception {
+    public void testSanityWhenGetChunkInfoThrows() throws Exception {
         @Cleanup
         BaseChunkStorage spyChunkStorage = spy(new InMemoryChunkStorage(executorService()));
         Exception exceptionToThrow = new ChunkStorageException("test", "Test Exception", new IOException("Test Exception"));
@@ -316,7 +316,7 @@ public class UtilsWrapperTests extends ThreadPooledTestSuite {
      * @throws Exception Throws exception in case of any error.
      */
     @Test
-    public void testSanityWriteIntoChunk() throws Exception {
+    public void testSanityWhenWriteIntoChunkThrows() throws Exception {
         @Cleanup
         BaseChunkStorage spyChunkStorage = spy(new InMemoryChunkStorage(executorService()));
         Exception exceptionToThrow = new ChunkStorageException("test", "Test Exception", new IOException("Test Exception"));
@@ -332,7 +332,7 @@ public class UtilsWrapperTests extends ThreadPooledTestSuite {
      * @throws Exception Throws exception in case of any error.
      */
     @Test
-    public void testSanityCheckChunkExists() throws Exception {
+    public void testSanityWhenCheckChunkExistsThrows() throws Exception {
         @Cleanup
         BaseChunkStorage spyChunkStorage = spy(new InMemoryChunkStorage(executorService()));
         val clazz = IllegalStateException.class;
@@ -347,7 +347,7 @@ public class UtilsWrapperTests extends ThreadPooledTestSuite {
      * @throws Exception Throws exception in case of any error.
      */
     @Test
-    public void testSanityDataEquals() throws Exception {
+    public void testSanityDataEqualityFails() throws Exception {
         @Cleanup
         BaseChunkStorage spyChunkStorage = spy(new InMemoryChunkStorage(executorService()));
         val clazz = IllegalStateException.class;
@@ -367,7 +367,7 @@ public class UtilsWrapperTests extends ThreadPooledTestSuite {
      * Test to check if the dataSize and the chunkName is not null.
      */
     @Test
-    public void testSanityInValidChunkName() {
+    public void testSanityWhenInValidChunkNameThrows() {
         val emptyChunkName = "";
         @Cleanup
         BaseChunkStorage chunkStorage = new InMemoryChunkStorage(executorService());
@@ -403,7 +403,7 @@ public class UtilsWrapperTests extends ThreadPooledTestSuite {
      * @throws Exception Throws exception in case of any error.
      */
     @Test
-    public void testSanityReadChunk() throws Exception {
+    public void testSanityWhenReadChunkThrows() throws Exception {
         @Cleanup
         BaseChunkStorage spyChunkStorage = spy(new InMemoryChunkStorage(executorService()));
         Exception exceptionToThrow = new ChunkStorageException("test", "Test Exception", new IOException("Test Exception"));
@@ -418,7 +418,7 @@ public class UtilsWrapperTests extends ThreadPooledTestSuite {
      * @throws Exception Throws exception in case of any error.
      */
     @Test
-    public void testSanityDeleteChunk() throws Exception {
+    public void testSanityWhenDeleteChunkThrows() throws Exception {
         @Cleanup
         BaseChunkStorage spyChunkStorage = spy(new InMemoryChunkStorage(executorService()));
         Exception exceptionToThrow = new ChunkStorageException("test", "Test Exception", new IOException("Test Exception"));
@@ -433,7 +433,7 @@ public class UtilsWrapperTests extends ThreadPooledTestSuite {
      * @throws Exception Throws exception in case of any error.
      */
     @Test
-    public void testSanityCheckPass() throws Exception {
+    public void testSanityWhenCheckPassThrows() throws Exception {
         val chunkName = "TestChunk";
         @Cleanup
         BaseChunkStorage spyChunkStorage = spy(new InMemoryChunkStorage(executorService()));
@@ -449,6 +449,12 @@ public class UtilsWrapperTests extends ThreadPooledTestSuite {
         verify(spyChunkStorage).doCreateWithContent(anyString(), anyInt(), any());
     }
 
+    /**
+     * To inject the fault for testing the chunkSegment sanity.
+     * @param spyChunkStorage spy for {@link BaseChunkStorage}.
+     * @param message The message for the exception to throw.
+     * @param classType The classType of the thrown exception.
+     */
     private void testSanity(BaseChunkStorage spyChunkStorage, String message, Class classType) {
         // Set up
         @Cleanup
