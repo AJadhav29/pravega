@@ -1699,36 +1699,35 @@ public class DataRecoveryTest extends ThreadPooledTestSuite {
         STATE.get().getConfigBuilder().include(pravegaProperties);
 
         // Copy Metadata and Storage Metadata chunks to separate directory
-//        File metadataChunksDir = Files.createTempDirectory("TestLTSRecovery").toFile().getAbsoluteFile();
-//        List<Path> filtered = null;
-//        try (Stream<Path> pathStream = Files.list(Path.of(this.baseDir.getAbsolutePath() + "/_system/containers"))) {
-//            filtered = pathStream.filter(path -> path.toFile().getName().startsWith("metadata_") || path.toFile().getName().startsWith("storage_metadata_"))
-//                    .collect(Collectors.toList());
-//                        path.toFile().listFiles()[0].getAbsolutePath().contains()
-//            for ( Path path : filtered ) {
-//                if (path.toFile().isDirectory()) {
-//                    for (File file : path.toFile().listFiles()) {
-//                        try {
-//                            if (file.getAbsolutePath().contains("storage_metadata_")) {
-//                                FileUtils.moveFileToDirectory(file.getAbsoluteFile(), Path.of(metadataChunksDir.getAbsolutePath() + "/storage_metadata_").toFile().getAbsoluteFile(), true);
-//                            } else if (file.getAbsolutePath().contains("metadata_")) {
-//                                FileUtils.moveFileToDirectory(file.getAbsoluteFile(), Path.of(metadataChunksDir.getAbsolutePath() + "/metadata_").toFile().getAbsoluteFile(), true);
-//                                FileUtils.moveFileToDirectory(file.getAbsoluteFile(), Path.of(this.baseDir.getAbsolutePath() + "/_system/containers/metadata_").toFile().getAbsoluteFile(), true);
-//                            }
-//                        } catch (FileExistsException e) {
-//
-//                        }
-//                    }
-//                }
-//            }
-//    }
+        File metadataChunksDir = Files.createTempDirectory("TestLTSRecovery").toFile().getAbsoluteFile();
+        List<Path> filtered = null;
+        try (Stream<Path> pathStream = Files.list(Path.of(this.baseDir.getAbsolutePath() + "/_system/containers"))) {
+            filtered = pathStream.filter(path -> path.toFile().getName().startsWith("metadata_") || path.toFile().getName().startsWith("storage_metadata_"))
+                    .collect(Collectors.toList());
+
+            for ( Path path : filtered ) {
+                if (path.toFile().isDirectory()) {
+                    for (File file : path.toFile().listFiles()) {
+                        try {
+                            if (file.getAbsolutePath().contains("storage_metadata_")) {
+                                FileUtils.moveFileToDirectory(file.getAbsoluteFile(), Path.of(metadataChunksDir.getAbsolutePath() + "/storage_metadata_").toFile().getAbsoluteFile(), true);
+                            } else if (file.getAbsolutePath().contains("metadata_")) {
+                                FileUtils.moveFileToDirectory(file.getAbsoluteFile(), Path.of(metadataChunksDir.getAbsolutePath() + "/metadata_").toFile().getAbsoluteFile(), true);
+                            }
+                        } catch (FileExistsException e) {
+
+                        }
+                    }
+                }
+            }
+    }
         // Copy to metadataChunksDir
-//        for ( Path path : filtered ) {
-//            FileUtils.moveDirectoryToDirectory(path.toFile(), metadataChunksDir, true);
-//        }
+        for ( Path path : filtered ) {
+            FileUtils.moveDirectoryToDirectory(path.toFile(), metadataChunksDir, true);
+        }
         // Command under test
-//        TestUtils.executeCommand("data-recovery recover-from-storage " + metadataChunksDir.getAbsolutePath() + " all", STATE.get());
-//        AssertExtensions.assertThrows("Container out of range ", () -> TestUtils.executeCommand("data-recovery recover-from-storage " + metadataChunksDir.getAbsolutePath() + "81", STATE.get()), ex -> ex instanceof IllegalArgumentException);
+        TestUtils.executeCommand("data-recovery recover-from-storage " + metadataChunksDir.getAbsolutePath() + " all", STATE.get());
+        AssertExtensions.assertThrows("Container out of range ", () -> TestUtils.executeCommand("data-recovery recover-from-storage " + metadataChunksDir.getAbsolutePath() + "81", STATE.get()), ex -> ex instanceof IllegalArgumentException);
         Assert.assertNotNull(RecoverFromStorageCommand.descriptor());
     }
 
